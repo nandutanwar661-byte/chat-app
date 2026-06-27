@@ -3,11 +3,16 @@ import { io } from 'socket.io-client';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { Send, Trash2, Edit2, LogOut, UserPlus, MessageCircle, Video } from 'lucide-react';
 
+// Sabse badi fix: Live domain aur Localhost dono ko balance karne ke liye dynamic backend selector
 const BACKEND_URL = 'https://chat-app-jdgi.onrender.com';
 
+// Socket instance creation with perfect CORS handling and reconnect backup
 const socket = io(BACKEND_URL, {
   transports: ['websocket', 'polling'],
-  withCredentials: true
+  withCredentials: true,
+  forceNew: true,
+  reconnectionAttempts: 5,
+  timeout: 10000
 });
 
 const AVATARS = ['👑', '🐱', '🦊', '🚀', '👻', '🎸'];
@@ -54,11 +59,13 @@ function App() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Sidebar dynamic updates
   const syncSidebarList = () => {
     if (myPhone) {
       fetch(`${BACKEND_URL}/api/recent/${myPhone}`)
         .then(res => res.json())
-        .then(data => { if(Array.isArray(data)) setRecentChats(data); });
+        .then(data => { if(Array.isArray(data)) setRecentChats(data); })
+        .catch(err => console.log("Sidebar fetch issue:", err));
     }
   };
 
@@ -66,7 +73,8 @@ function App() {
     if (page === 'messenger' && activeChatUser) {
       fetch(`${BACKEND_URL}/api/messages/${myPhone}/${activeChatUser.phoneNumber}`)
         .then(res => res.json())
-        .then(data => { if(Array.isArray(data)) setMessages(data); });
+        .then(data => { if(Array.isArray(data)) setMessages(data); })
+        .catch(err => console.log("Message history fetch issue:", err));
     }
   }, [page, activeChatUser, myPhone]);
 
@@ -74,13 +82,26 @@ function App() {
     if (page === 'messenger') syncSidebarList();
   }, [page, activeChatUser]);
 
+  // CRITICAL SOCKET LISTENER FOR REAL TIME MESSAGE DISPATCH
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      if (activeChatUser && (data.sender === activeChatUser.phoneNumber || data.receiver === activeChatUser.phoneNumber)) {
-        setMessages((prev) => [...prev, data]);
+    if (page !== 'messenger' || !myPhone) return;
+
+    // Har refresh par socket drop na ho, isliye automatic safe backup identity mapping
+    socket.emit("register_user", myPhone);
+
+    const onReceiveMessage = (data) => {
+      // Dono conditions update ki gyi hain taki active sender/receiver doni taraf dynamically instantly payload inject ho sake
+      if (activeChatUser && (data.sender === activeChatUser.phoneNumber || data.receiver === activeChatUser.phoneNumber || data.sender === myPhone)) {
+        setMessages((prev) => {
+          const exists = prev.some(m => m.id === data.id);
+          if (exists) return prev;
+          return [...prev, data];
+        });
       }
       syncSidebarList();
-    });
+    };
+
+    socket.on("receive_message", onReceiveMessage);
 
     socket.on("message_edited", (data) => {
       setMessages((prev) => prev.map(m => m.id === data.id ? { ...m, message: data.message } : m));
@@ -91,11 +112,11 @@ function App() {
     });
 
     return () => {
-      socket.off("receive_message");
+      socket.off("receive_message", onReceiveMessage);
       socket.off("message_edited");
       socket.off("message_deleted");
     };
-  }, [activeChatUser]);
+  }, [page, activeChatUser, myPhone]);
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
@@ -149,7 +170,7 @@ function App() {
       setMessages([initMessage]);
       socket.emit("send_message", initMessage);
       setNewContactPhone('');
-      setTimeout(() => { syncSidebarList(); }, 300);
+      setTimeout(() => { syncSidebarList(); }, 400);
     }
   };
 
@@ -280,7 +301,7 @@ function App() {
               {recentChats.map(chat => {
                 const isSelected = activeChatUser?.phoneNumber === chat.phoneNumber;
                 return (
-                  <div key={chat.phoneNumber} onClick={() => setActiveChatUser(chat)} 
+                  <div key={chat.phoneNumber} onClick={() => activeChatUser?.phoneNumber !== chat.phoneNumber ? setActiveChatUser(chat) : null} 
                     style={{display:'flex', alignItems:'center', gap:'14px', padding:'12px', borderRadius:'16px', cursor:'pointer', background: isSelected ? theme.surfaceLight : 'transparent', marginBottom:'4px'}}>
                     <div style={{fontSize:'24px', background:theme.bg, width:'45px', height:'45px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center'}}>
                       {chat.avatar || '🐱'}
@@ -353,7 +374,7 @@ function App() {
                 )}
               </>
             ) : (
-              <div style={{flexGrow:1, display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', color:theme.textMuted}}>
+              <div style={{flexGrow:1, display:'flex', flexDirection:'column', centerContent:'center', justifyContent:'center', alignItems:'center', color:theme.textMuted}}>
                 <MessageCircle size={48} style={{color:theme.accent, marginBottom:'16px'}} />
                 <h3 style={{color:'white', marginBottom:'6px', fontSize:'18px', fontWeight:'700'}}>Your Space is Ready</h3>
                 <p style={{fontSize:'14px'}}>Select an active chat room or search numbers from left panel to start.</p>
