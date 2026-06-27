@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "msg_8zfcujz96",
+    "id": "msg_1780466217637",
+    "sender": "nishu",
+    "receiver": "bittu",
+    "message": "hi",
+    "timestamp": "11:26 AM"
+  },
+  {
+    "_id": "msg_uer40olcm",
+    "id": "msg_1780466256578",
+    "sender": "8824310396",
+    "receiver": "bittu",
+    "message": "hi",
+    "timestamp": "11:27 AM"
+  },
+  {
+    "_id": "msg_vj5n5ust3",
+    "id": "msg_1780466391082",
+    "sender": "8824310396",
+    "receiver": "nittu",
+    "message": "hlo",
+    "timestamp": "11:29 AM"
+  },
+  {
+    "_id": "msg_qirquor5x",
+    "id": "msg_1780466403243",
+    "sender": "8824310396",
+    "receiver": "nittu",
+    "message": "kese ho",
+    "timestamp": "11:30 AM"
+  },
+  {
+    "_id": "msg_z0sivsy75",
+    "id": "msg_1780728732187",
+    "sender": "nishu@gmail.com",
+    "receiver": "nitu",
+    "message": "hi",
+    "timestamp": "12:22 PM"
+  }
+]

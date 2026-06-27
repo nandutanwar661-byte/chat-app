@@ -1,0 +1,319 @@
+
+/* ================= ⚡ GLOBAL RESETS & BASE LAYER ================= */
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ================= ⚡ SPLASH SCREEN ANIMATION ================= */
+.splash-wrapper {
+  background: #111b21;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.splash-logo-animated {
+  font-size: 80px;
+  animation: heartbeat-pop 1.5s ease-out forwards;
+}
+
+.splash-title {
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out 0.5s forwards;
+}
+
+/* ================= ⚡ MAIN MASTER CONTAINER ================= */
+.app-master-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* DECORATED MAIN NAVBAR */
+.main-navbar {
+  background: linear-gradient(135deg, #005e54 0%, #008069 100%);
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 10;
+}
+
+.main-navbar h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* AVATAR PROFILE SELECTOR */
+.avatar-selector-grid {
+  display: flex; 
+  gap: 10px; 
+  justify-content: center; 
+  margin: 15px 0;
+}
+
+.avatar-bubble-opt {
+  font-size: 28px; 
+  cursor: pointer; 
+  padding: 8px; 
+  border-radius: 50%; 
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.avatar-bubble-opt.selected { 
+  border-color: #008069; 
+  background: #e8f5e9; 
+  transform: scale(1.1);
+}
+
+/* ================= ⚡ AUTH CARD SCREEN ================= */
+.auth-card {
+  background-color: #ffffff;
+  padding: 40px 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  border-top: 5px solid #008069;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* ================= ⚡ FULL INTERACTION DASHBOARD ================= */
+.dashboard-workspace {
+  display: flex;
+  flex-grow: 1;
+  background-color: #f0f2f5;
+  overflow: hidden;
+  height: calc(100vh - 62px); /* Automatically fits remaining screen */
+}
+
+/* Left Sidebar For Contacts & History */
+.sidebar-conversations {
+  width: 30%;
+  min-width: 320px;
+  background: white;
+  border-right: 1px solid #e9edef;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header-action {
+  padding: 15px; 
+  background: #f0f2f5; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px;
+  border-bottom: 1px solid #e9edef;
+}
+
+.recent-chats-list {
+  flex-grow: 1; 
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+/* Contact List Items */
+.contact-card-item {
+  display: flex; 
+  align-items: center; 
+  padding: 12px 15px; 
+  border-bottom: 1px solid #f0f2f5; 
+  cursor: pointer; 
+  transition: 0.2s;
+}
+
+.contact-card-item:hover { 
+  background-color: #f5f6f6; 
+}
+
+.contact-card-item.active { 
+  background-color: #ebebeb; 
+}
+
+.contact-avatar { 
+  font-size: 28px; 
+  margin-right: 15px; 
+  background: #e1e6e8;
+  padding: 6px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right Section Chat Layout */
+.chat-window-pane {
+  width: 70%; 
+  display: flex; 
+  flex-direction: column;
+  background-color: #efeae2;
+  background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* Official WhatsApp Tile Texture */
+  background-blend-mode: overlay;
+  background-color: rgba(239, 234, 226, 0.96);
+  height: 100%;
+}
+
+/* Empty State View Notice */
+.empty-state-notice {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  flex-grow: 1; 
+  color: #667781;
+  text-align: center;
+}
+
+.empty-state-notice h3 {
+  color: #41525d;
+  margin-top: 15px;
+}
+
+/* ================= ⚡ MESSAGES AREA & BUBBLES ================= */
+.messages-area { 
+  flex-grow: 1; 
+  padding: 25px; 
+  overflow-y: auto; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px;
+}
+
+.message-row { 
+  display: flex; 
+}
+
+.msg-me { justify-content: flex-end; }
+.msg-them { justify-content: flex-start; }
+
+/* Message Bubbles Formatting */
+.bubble { 
+  padding: 10px 14px; 
+  border-radius: 12px; 
+  max-width: 65%; 
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12); 
+  position: relative;
+}
+
+.bubble-me { 
+  background: #d9fdd3; 
+  border-top-right-radius: 2px;
+}
+
+.bubble-them { 
+  background: white; 
+  border-top-left-radius: 2px;
+}
+
+.msg-text {
+  color: #111b21;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+/* Action Controls (Edit / Delete) */
+.bubble-actions { 
+  display: flex; 
+  gap: 12px; 
+  font-size: 12px; 
+  margin-top: 6px; 
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-top: 4px;
+}
+
+.action-btn { 
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  color: #008069; 
+  font-weight: 500;
+}
+
+.action-btn.del { 
+  color: #ea0038; 
+}
+
+.timestamp { 
+  font-size: 10px; 
+  color: #667781; 
+  text-align: right; 
+  margin-top: 4px; 
+}
+
+/* ================= ⚡ CHAT INPUT FOOTER BAR ================= */
+.chat-footer { 
+  padding: 12px 20px; 
+  background: #f0f2f5; 
+  display: flex; 
+  align-items: center; 
+  border-top: 1px solid #e9edef;
+}
+
+.chat-input { 
+  flex-grow: 1; 
+  padding: 14px 18px; 
+  border: 1px solid #ffffff; 
+  border-radius: 25px; 
+  outline: none; 
+  font-size: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.chat-input:focus {
+  border-color: #008069;
+}
+
+.send-btn { 
+  background: #008069; 
+  color: white; 
+  border: none; 
+  padding: 12px 24px; 
+  border-radius: 25px; 
+  margin-left: 12px; 
+  cursor: pointer; 
+  font-weight: bold; 
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(0,128,105,0.3);
+  transition: all 0.2s ease;
+}
+
+.send-btn:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+/* ================= ⚡ REUSABLE KEYFRAMES ================= */
+@keyframes heartbeat-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
